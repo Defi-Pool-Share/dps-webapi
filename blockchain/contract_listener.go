@@ -13,6 +13,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 
 	"github.com/defi-pool-share/dps-webapi/blockchain/events"
+	"github.com/defi-pool-share/dps-webapi/storage"
 )
 
 const (
@@ -61,5 +62,5 @@ func handleLoanCreatedEvent(vLog types.Log) {
 
 	log.Printf("New LoanCreated event received (from: %s, loanIndex: %d)", loan.Addr, loan.LoanIndex)
 
-	//TODO: Store the loan into a cache
+	storage.SaveLoan(loan)
 }
