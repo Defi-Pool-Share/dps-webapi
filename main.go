@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/defi-pool-share/dps-webapi/blockchain"
+	"github.com/defi-pool-share/dps-webapi/net"
 	"github.com/defi-pool-share/dps-webapi/storage"
 	"github.com/joho/godotenv"
 )
@@ -15,5 +16,6 @@ func main() {
 	}
 
 	storage.InitLocalStorage()
-	blockchain.InitBlockchainListener()
+	go blockchain.InitBlockchainListener()
+	net.InitAPI()
 }

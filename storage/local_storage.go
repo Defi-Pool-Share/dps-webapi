@@ -6,6 +6,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/defi-pool-share/dps-webapi/blockchain/contractEntity"
 	"github.com/defi-pool-share/dps-webapi/blockchain/events"
 	"github.com/dgraph-io/badger/v3"
 )
@@ -18,11 +19,9 @@ func InitLocalStorage() {
 	if err != nil {
 		log.Fatalf("Failed to open BadgerDB: %v", err)
 	}
-	defer db.Close()
-
 }
 
-func SaveLoan(loan *events.LoanCreatedEvent) {
+func SaveLoan(loan *contractEntity.Loan) {
 	loanJSON, err := json.Marshal(loan)
 	if err != nil {
 		log.Fatalf("Failed to marshal loan: %v", err)
