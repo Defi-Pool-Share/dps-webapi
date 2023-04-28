@@ -7,7 +7,6 @@ import (
 	"strconv"
 
 	"github.com/defi-pool-share/dps-webapi/blockchain/contractEntity"
-	"github.com/defi-pool-share/dps-webapi/blockchain/events"
 	"github.com/dgraph-io/badger/v3"
 )
 
@@ -36,8 +35,8 @@ func SaveLoan(loan *contractEntity.Loan) {
 	}
 }
 
-func FetchAllLoans() ([]*events.LoanCreatedEvent, error) {
-	var loans []*events.LoanCreatedEvent
+func FetchAllLoans() ([]*contractEntity.Loan, error) {
+	var loans []*contractEntity.Loan
 
 	err := db.View(func(txn *badger.Txn) error {
 		opts := badger.DefaultIteratorOptions
@@ -52,7 +51,7 @@ func FetchAllLoans() ([]*events.LoanCreatedEvent, error) {
 				return err
 			}
 
-			var loan events.LoanCreatedEvent
+			var loan contractEntity.Loan
 			err = json.Unmarshal(value, &loan)
 			if err != nil {
 				return err
