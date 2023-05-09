@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"encoding/binary"
 	"encoding/json"
 	"log"
 	"os"
@@ -33,6 +34,28 @@ func SaveLoan(loan *contractEntity.Loan) {
 	if err != nil {
 		log.Fatalf("Failed to store loan in BadgerDB: %v", err)
 	}
+}
+
+func DeleteLoanByIndex(loanIndex int64) error {
+	err := db.Update(func(txn *badger.Txn) error {
+		loanIndexBytes := make([]byte, 8)
+		binary.BigEndian.PutUint64(loanIndexBytes, uint64(loanIndex))
+
+		key := append([]byte("loan:"), loanIndexBytes...)
+		err := txn.Delete(key)
+		if err != nil {
+			log.Fatalf("failed to delete loan with index %d: %v", loanIndex, err)
+			return err
+		}
+		return nil
+	})
+
+	if err != nil {
+		log.Fatalf("failed to delete loan with index %d: %v", loanIndex, err)
+		return err
+	}
+
+	return nil
 }
 
 func FetchAllLoans() ([]*contractEntity.Loan, error) {

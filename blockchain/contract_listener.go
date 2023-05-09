@@ -22,8 +22,9 @@ import (
 )
 
 const (
-	loanCreatedEventSignature = "LoanCreated(address,uint256)"
-	loanUpdatedEventSignature = "LoanUpdated(uint256)"
+	loanCreatedEventSignature  = "LoanCreated(address,uint256)"
+	loanUpdatedEventSignature  = "LoanUpdated(uint256)"
+	loanWithdrawEventSignature = "LoanWithdraw(uint256)"
 )
 
 var dpsABI *abi.ABI
@@ -73,11 +74,17 @@ func InitBlockchainListener() {
 		case err := <-sub.Err():
 			log.Fatalf("Error from logs subscription: %v", err)
 		case vLog := <-logs:
+			// created
 			if vLog.Topics[0] == crypto.Keccak256Hash([]byte(loanCreatedEventSignature)) {
 				handleLoanCreatedEvent(vLog)
 			}
+			// update
 			if vLog.Topics[0] == crypto.Keccak256Hash([]byte(loanUpdatedEventSignature)) {
 				handleLoanUpdatedEvent(vLog)
+			}
+			// widthdraw
+			if vLog.Topics[0] == crypto.Keccak256Hash([]byte(loanWithdrawEventSignature)) {
+				handleLoanWithdrawEvent(vLog)
 			}
 		}
 	}
@@ -112,6 +119,13 @@ func handleLoanUpdatedEvent(vLog types.Log) {
 	}
 
 	storage.SaveLoan(loan)
+}
+
+func handleLoanWithdrawEvent(vLog types.Log) {
+	_loanIndex := new(big.Int).SetBytes(vLog.Topics[1].Bytes()).Int64()
+
+	log.Printf("New LoanWithdraw event received (loanIndex: %d)", _loanIndex)
+	storage.DeleteLoanByIndex(_loanIndex)
 }
 
 func getLoanInfo(client *ethclient.Client, index int64) (*contractEntity.Loan, error) {
