@@ -142,7 +142,7 @@ func getLoanInfo(client *ethclient.Client, index int64) (*contractEntity.Loan, e
 	loan.Lender = loanValue.FieldByName("Lender").Interface().(common.Address)
 	loan.Borrower = loanValue.FieldByName("Borrower").Interface().(common.Address)
 	loan.TokenId = loanValue.FieldByName("TokenId").Interface().(*big.Int).Int64()
-	loan.LoanAmount = loanValue.FieldByName("LoanAmount").Interface().(*big.Int).Int64()
+	loan.LoanAmount = loanValue.FieldByName("LoanAmount").Interface().(*big.Int).String()
 	loan.CreationTime = loanValue.FieldByName("CreationTime").Interface().(*big.Int).Int64()
 	loan.StartTime = loanValue.FieldByName("StartTime").Interface().(*big.Int).Int64()
 	loan.EndTime = loanValue.FieldByName("EndTime").Interface().(*big.Int).Int64()
