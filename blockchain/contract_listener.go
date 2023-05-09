@@ -30,7 +30,8 @@ var dpsABI *abi.ABI
 var client *ethclient.Client
 
 func InitBlockchainListener() {
-	client, err := ethclient.Dial(os.Getenv("ETH_NETWORK_URL"))
+	var err error
+	client, err = ethclient.Dial(os.Getenv("ETH_NETWORK_URL"))
 	if err != nil {
 		log.Fatalf("Failed to connect to Ethereum client: %v", err)
 	}
@@ -140,14 +141,14 @@ func getLoanInfo(client *ethclient.Client, index int64) (*contractEntity.Loan, e
 
 	loan.Lender = loanValue.FieldByName("Lender").Interface().(common.Address)
 	loan.Borrower = loanValue.FieldByName("Borrower").Interface().(common.Address)
-	loan.TokenId = loanValue.FieldByName("TokenId").Interface().(int64)
-	loan.LoanAmount = loanValue.FieldByName("LoanAmount").Interface().(int64)
-	loan.CreationTime = loanValue.FieldByName("CreationTime").Interface().(int64)
-	loan.StartTime = loanValue.FieldByName("StartTime").Interface().(int64)
-	loan.EndTime = loanValue.FieldByName("EndTime").Interface().(int64)
+	loan.TokenId = loanValue.FieldByName("TokenId").Interface().(*big.Int).Int64()
+	loan.LoanAmount = loanValue.FieldByName("LoanAmount").Interface().(*big.Int).Int64()
+	loan.CreationTime = loanValue.FieldByName("CreationTime").Interface().(*big.Int).Int64()
+	loan.StartTime = loanValue.FieldByName("StartTime").Interface().(*big.Int).Int64()
+	loan.EndTime = loanValue.FieldByName("EndTime").Interface().(*big.Int).Int64()
 	loan.AcceptedToken = loanValue.FieldByName("AcceptedToken").Interface().(common.Address)
 	loan.IsActive = loanValue.FieldByName("IsActive").Interface().(bool)
-	loan.LoanIndex = loanValue.FieldByName("LoanIndex").Interface().(int64)
+	loan.LoanIndex = loanValue.FieldByName("LoanIndex").Interface().(*big.Int).Int64()
 
 	log.Printf("%v", loan)
 
