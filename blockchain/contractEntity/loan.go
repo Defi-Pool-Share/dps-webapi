@@ -8,7 +8,7 @@ type Loan struct {
 	Lender        common.Address
 	Borrower      common.Address
 	TokenId       int64
-	LoanAmount    strin
+	LoanAmount    string
 	CreationTime  int64
 	StartTime     int64
 	EndTime       int64
